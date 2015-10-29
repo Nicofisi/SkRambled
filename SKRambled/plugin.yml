@@ -1,0 +1,7 @@
+name: SkRambled
+author: HeadShot
+description: The SKRambled Addon for Skript
+version: 1.0.1.0
+main: com.gmail.headshot.SKRambled
+depend: [Skript]
+softdepend: [ParticleLIB, NameTagEdit, Factions, MassiveCore]
