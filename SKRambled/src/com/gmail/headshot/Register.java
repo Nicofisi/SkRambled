@@ -190,7 +190,7 @@ public class Register {
 		Skript.registerExpression(ExprFactionClaim.class, Faction.class,
 				ExpressionType.SIMPLE, "[the] faction at %location%");
 		SimplePropertyExpression.register(ExprSetFactionPowerBoost.class,
-				Double.class, "faction powerboost", "string");
+				Double.class, "powerboost", "faction");
 		Skript.registerExpression(ExprFactionList.class, String.class,
 				ExpressionType.SIMPLE, "list of [all] factions",
 				"factions list", "all factions");
