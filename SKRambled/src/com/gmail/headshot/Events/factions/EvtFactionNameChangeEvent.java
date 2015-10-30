@@ -1,4 +1,4 @@
-package com.gmail.headshot.Events.factions;
+package com.gmail.headshot.events.factions;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

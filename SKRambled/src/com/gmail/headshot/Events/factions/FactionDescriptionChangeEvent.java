@@ -1,4 +1,4 @@
-package com.gmail.headshot.Events.factions;
+package com.gmail.headshot.events.factions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

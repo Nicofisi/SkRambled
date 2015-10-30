@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Parser;
+import ch.njol.skript.conditions.base.PropertyCondition;
 import ch.njol.skript.expressions.base.EventValueExpression;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.lang.ExpressionType;
@@ -17,21 +18,20 @@ import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 
-import com.gmail.headshot.Events.factions.EvtFactionCreateEvent;
-import com.gmail.headshot.Events.factions.EvtFactionDescriptionChangeEvent;
-import com.gmail.headshot.Events.factions.EvtFactionDisbandEvent;
-import com.gmail.headshot.Events.factions.EvtFactionNameChangeEvent;
-import com.gmail.headshot.conditions.factions.CondIsLeader;
-import com.gmail.headshot.conditions.factions.CondIsMember;
-import com.gmail.headshot.conditions.factions.CondIsOfficer;
-import com.gmail.headshot.conditions.factions.CondIsRecruit;
+import com.gmail.headshot.conditions.mcMMO.CondIsUsingAdminChat;
+import com.gmail.headshot.conditions.mcMMO.CondIsUsingPartyChat;
 import com.gmail.headshot.effects.factions.EffClaimLand;
 import com.gmail.headshot.effects.factions.EffCreateFaction;
 import com.gmail.headshot.effects.factions.EffDisbandFaction;
 import com.gmail.headshot.effects.factions.EffInvitePlayer;
 import com.gmail.headshot.effects.factions.EffKickPlayer;
-import com.gmail.headshot.effects.factions.EffPromotePlayer;
 import com.gmail.headshot.effects.factions.EffUnClaimLand;
+import com.gmail.headshot.effects.mcMMO.EffSendAdminMesssage;
+import com.gmail.headshot.effects.mcMMO.EffSendPartyMessage;
+import com.gmail.headshot.events.factions.EvtFactionCreateEvent;
+import com.gmail.headshot.events.factions.EvtFactionDescriptionChangeEvent;
+import com.gmail.headshot.events.factions.EvtFactionDisbandEvent;
+import com.gmail.headshot.events.factions.EvtFactionNameChangeEvent;
 import com.gmail.headshot.expressions.factions.ExprFactionAllyList;
 import com.gmail.headshot.expressions.factions.ExprFactionClaim;
 import com.gmail.headshot.expressions.factions.ExprFactionDescription;
@@ -46,12 +46,15 @@ import com.gmail.headshot.expressions.factions.ExprFactionTitle;
 import com.gmail.headshot.expressions.factions.ExprFactionTruceList;
 import com.gmail.headshot.expressions.factions.ExprPlayerFaction;
 import com.gmail.headshot.expressions.factions.ExprPlayerList;
+import com.gmail.headshot.expressions.factions.ExprRankOfPlayer;
 import com.gmail.headshot.expressions.factions.ExprRelationShipStatus;
 import com.gmail.headshot.expressions.factions.ExprSetFactionPower;
 import com.gmail.headshot.expressions.factions.ExprSetFactionPowerBoost;
 import com.gmail.headshot.expressions.mcMMO.ExprLevel;
 import com.gmail.headshot.expressions.mcMMO.ExprPowerLevel;
+import com.gmail.nossr50.datatypes.party.Party;
 import com.gmail.nossr50.datatypes.skills.SkillType;
+import com.gmail.nossr50.party.PartyManager;
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
@@ -166,8 +169,6 @@ public class Register {
 				"[skrambled] disband [the faction] %faction%");
 		Skript.registerEffect(EffCreateFaction.class,
 				"[skrambled] create a faction [with name] %string% with leader %player%");
-		Skript.registerEffect(EffPromotePlayer.class,
-				"promote %player% to %rel%");
 		SimplePropertyExpression.register(ExprFactionName.class, String.class,
 				"name", "faction");
 		SimplePropertyExpression.register(ExprPlayerFaction.class,
@@ -206,6 +207,8 @@ public class Register {
 				Rel.class,
 				ExpressionType.SIMPLE,
 				"relation[ship] [status] between [the faction] %faction% (and|with) [the faction] %faction%");
+		Skript.registerExpression(ExprRankOfPlayer.class, Rel.class,
+				ExpressionType.SIMPLE, "role of [the player] %player%");
 		Skript.registerExpression(ExprFactionEnemyList.class, String.class,
 				ExpressionType.SIMPLE,
 				"list of [all] enemies of [the faction] %faction%",
@@ -214,18 +217,6 @@ public class Register {
 				ExpressionType.SIMPLE,
 				"list of [all] truces of [the faction] %faction%",
 				"[all] faction truces list of %faction%");
-		Skript.registerCondition(CondIsLeader.class,
-				"%player% is leader of [the faction] %faction%",
-				"%player% (is not|isn't) leader of [the faction] %faction%");
-		Skript.registerCondition(CondIsOfficer.class,
-				"%player% is officer (of|in) [the faction] %faction%",
-				"%player% (is not|isn't) officer (of|in) [the faction] %faction%");
-		Skript.registerCondition(CondIsMember.class,
-				"%player% is member (of|in) [the faction] %faction%",
-				"%player% (is not|isn't) member (of|in) [the faction] %faction%");
-		Skript.registerCondition(CondIsRecruit.class,
-				"%player% is recruit (of|in) [the faction] %faction%",
-				"%player% (is not|isn't) recruit (of|in) [the faction] %faction%");
 		registerFactionsTypes();
 	}
 
@@ -287,18 +278,53 @@ public class Register {
 
 	public static void registerAllmcMMO() {
 
+		Skript.registerEffect(EffSendPartyMessage.class,
+				"send %string% to [the] party %party% from [a] player named %string%");
+
+		Skript.registerEffect(EffSendAdminMesssage.class,
+				"send %string% to [the] admin[chat| chat] from [a] player named %string%");
+
 		SimplePropertyExpression.register(ExprPowerLevel.class, Integer.class,
-				"power level", "player");
+				"power(level| level)", "player");
 
 		Skript.registerExpression(ExprLevel.class, Integer.class,
 				ExpressionType.SIMPLE, "[mcmmo] %skill% level of %player%");
+		PropertyCondition.register(CondIsUsingPartyChat.class,
+				"(using party(chat| chat))", "players");
+		PropertyCondition.register(CondIsUsingAdminChat.class,
+				"(using admin(chat| chat))", "players");
 		registermcMMOTypes();
 	}
+
 	public static void registermcMMOTypes() {
 
+		Classes.registerClass(new ClassInfo<Party>(Party.class, "party").name(
+				"Party").parser(new Parser<Party>() {
+			@Override
+			@Nullable
+			public Party parse(String s, ParseContext context) {
+				return PartyManager.getParty(s);
+			}
+
+			@Override
+			public String toString(Party party, int flags) {
+				return party.getName().toLowerCase();
+			}
+
+			@Override
+			public String toVariableNameString(Party party) {
+				return party.getName().toLowerCase();
+			}
+
+			@Override
+			public String getVariableNamePattern() {
+				return ".+";
+			}
+
+		}));
+
 		Classes.registerClass(new ClassInfo<SkillType>(SkillType.class, "skill")
-				.name("Skill")
-				.parser(new Parser<SkillType>() {
+				.name("Skill").parser(new Parser<SkillType>() {
 					@Override
 					@Nullable
 					public SkillType parse(String s, ParseContext context) {
@@ -321,7 +347,6 @@ public class Register {
 					}
 
 				}));
-
 
 	}
 

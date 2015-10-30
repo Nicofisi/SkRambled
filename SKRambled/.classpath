@@ -7,6 +7,5 @@
 	<classpathentry kind="lib" path="C:/Users/Alaa/Downloads/mcMMO.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Alaa/Downloads/Factions.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Alaa/Downloads/MassiveCore.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Alaa/Downloads/EffectLib-3.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

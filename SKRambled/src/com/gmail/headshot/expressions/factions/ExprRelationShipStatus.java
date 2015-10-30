@@ -44,6 +44,7 @@ public class ExprRelationShipStatus extends SimpleExpression<Rel> {
 	public Class<? extends Rel> getReturnType() {
 		return Rel.class;
 	}
+
 	@Override
 	public void change(Event e, Object[] delta, Changer.ChangeMode mode) {
 		Faction firstfac = fac1.getSingle(e);
@@ -55,9 +56,11 @@ public class ExprRelationShipStatus extends SimpleExpression<Rel> {
 		Rel rel = (Rel) (delta[0]);
 		if (mode == Changer.ChangeMode.SET) {
 			firstfac.setRelationWish(secondfac, rel);
+			secondfac.setRelationWish(firstfac, rel);
 		}
 		if (mode == Changer.ChangeMode.REMOVE) {
 			firstfac.setRelationWish(secondfac, Rel.NEUTRAL);
+			secondfac.setRelationWish(firstfac, Rel.NEUTRAL);
 		}
 	}
 
@@ -70,6 +73,7 @@ public class ExprRelationShipStatus extends SimpleExpression<Rel> {
 	public String toString(final @Nullable Event e, final boolean debug) {
 		return "relation between faction";
 	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<?>[] acceptChange(final Changer.ChangeMode mode) {

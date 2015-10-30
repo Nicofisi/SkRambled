@@ -6,10 +6,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.gmail.headshot.Events.factions.FactionCreateEvent;
-import com.gmail.headshot.Events.factions.FactionDescriptionChangeEvent;
-import com.gmail.headshot.Events.factions.FactionDisbandEvent;
-import com.gmail.headshot.Events.factions.FactionNameChangeEvent;
+import com.gmail.headshot.events.factions.FactionCreateEvent;
+import com.gmail.headshot.events.factions.FactionDescriptionChangeEvent;
+import com.gmail.headshot.events.factions.FactionDisbandEvent;
+import com.gmail.headshot.events.factions.FactionNameChangeEvent;
 
 import ch.njol.skript.Skript;
 
