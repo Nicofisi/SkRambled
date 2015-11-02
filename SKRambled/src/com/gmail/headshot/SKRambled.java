@@ -1,21 +1,18 @@
 package com.gmail.headshot;
 
-import java.io.File;
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.gmail.headshot.events.HeadRotateEvent;
 import com.gmail.headshot.events.factions.FactionCreateEvent;
 import com.gmail.headshot.events.factions.FactionDescriptionChangeEvent;
 import com.gmail.headshot.events.factions.FactionDisbandEvent;
 import com.gmail.headshot.events.factions.FactionNameChangeEvent;
-
-import ch.njol.skript.Skript;
+import com.gmail.headshot.events.general.RepairEvent;
 
 public class SKRambled extends JavaPlugin {
 	static SKRambled instance;
-	public File file;
 
 	public void onEnable() {
 		instance = this;
@@ -24,7 +21,11 @@ public class SKRambled extends JavaPlugin {
 		if (skript != null) {
 			getLogger()
 					.info("[SKRambled] Congratulations! It is official.. SKRambled has been enabled!");
-			Skript.registerAddon(this);
+			Register.registerSkript();
+			getServer().getPluginManager().registerEvents(
+					new HeadRotateEvent(), this);
+			getServer().getPluginManager().registerEvents(new RepairEvent(),
+					this);
 			getLogger().info("[SKRambled] Skript has been hooked!");
 			Plugin mcMMO = Bukkit.getServer().getPluginManager()
 					.getPlugin("mcMMO");

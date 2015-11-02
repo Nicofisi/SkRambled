@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.ClassInfo;
@@ -28,10 +29,12 @@ import com.gmail.headshot.effects.factions.EffKickPlayer;
 import com.gmail.headshot.effects.factions.EffUnClaimLand;
 import com.gmail.headshot.effects.mcMMO.EffSendAdminMesssage;
 import com.gmail.headshot.effects.mcMMO.EffSendPartyMessage;
+import com.gmail.headshot.events.EvtHeadRotateEvent;
 import com.gmail.headshot.events.factions.EvtFactionCreateEvent;
 import com.gmail.headshot.events.factions.EvtFactionDescriptionChangeEvent;
 import com.gmail.headshot.events.factions.EvtFactionDisbandEvent;
 import com.gmail.headshot.events.factions.EvtFactionNameChangeEvent;
+import com.gmail.headshot.events.general.EvtRepairEvent;
 import com.gmail.headshot.expressions.factions.ExprFactionAllyList;
 import com.gmail.headshot.expressions.factions.ExprFactionClaim;
 import com.gmail.headshot.expressions.factions.ExprFactionDescription;
@@ -40,8 +43,8 @@ import com.gmail.headshot.expressions.factions.ExprFactionHome;
 import com.gmail.headshot.expressions.factions.ExprFactionList;
 import com.gmail.headshot.expressions.factions.ExprFactionMOTD;
 import com.gmail.headshot.expressions.factions.ExprFactionName;
-import com.gmail.headshot.expressions.factions.ExprFactionPower;
-import com.gmail.headshot.expressions.factions.ExprFactionPowerBoost;
+import com.gmail.headshot.expressions.factions.ExprPlayerPower;
+import com.gmail.headshot.expressions.factions.ExprPlayerPowerBoost;
 import com.gmail.headshot.expressions.factions.ExprFactionTitle;
 import com.gmail.headshot.expressions.factions.ExprFactionTruceList;
 import com.gmail.headshot.expressions.factions.ExprPlayerFaction;
@@ -50,6 +53,9 @@ import com.gmail.headshot.expressions.factions.ExprRankOfPlayer;
 import com.gmail.headshot.expressions.factions.ExprRelationShipStatus;
 import com.gmail.headshot.expressions.factions.ExprSetFactionPower;
 import com.gmail.headshot.expressions.factions.ExprSetFactionPowerBoost;
+import com.gmail.headshot.expressions.general.ExprAmountOfVars;
+import com.gmail.headshot.expressions.general.ExprPitchOfPlayer;
+import com.gmail.headshot.expressions.general.ExprYawOfPlayer;
 import com.gmail.headshot.expressions.mcMMO.ExprLevel;
 import com.gmail.headshot.expressions.mcMMO.ExprPowerLevel;
 import com.gmail.nossr50.datatypes.party.Party;
@@ -60,6 +66,47 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
 
 public class Register {
+
+	public static void registerSkript() {
+
+		Skript.registerAddon(SKRambled.getInstance());
+
+		Skript.registerEvent("Head Rotate", SimpleEvent.class,
+				EvtHeadRotateEvent.class,
+				new String[] { "head (rotat(e|ion)|move[ment])" });
+
+		EventValues.registerEventValue(EvtHeadRotateEvent.class, Player.class,
+				new Getter<Player, EvtHeadRotateEvent>() {
+					@Override
+					public Player get(EvtHeadRotateEvent event) {
+						return event.getPlayer();
+					}
+				}, 0);
+		Skript.registerEvent("Repair", SimpleEvent.class, EvtRepairEvent.class,
+				new String[] { "repair" });
+
+		EventValues.registerEventValue(EvtRepairEvent.class, Player.class,
+				new Getter<Player, EvtRepairEvent>() {
+					@Override
+					public Player get(EvtRepairEvent event) {
+						return event.getPlayer();
+					}
+				}, 0);
+
+		EventValues.registerEventValue(EvtRepairEvent.class, ItemStack.class,
+				new Getter<ItemStack, EvtRepairEvent>() {
+					@Override
+					public ItemStack get(EvtRepairEvent event) {
+						return event.getItem();
+					}
+				}, 0);
+		Skript.registerExpression(ExprPitchOfPlayer.class, Float.class,
+				ExpressionType.SIMPLE, "pitch of %player%", "%player%'s pitch");
+		Skript.registerExpression(ExprYawOfPlayer.class, Float.class,
+				ExpressionType.SIMPLE, "yaw of %player%", "%player%'s yaw");
+		Skript.registerExpression(ExprAmountOfVars.class, Number.class,
+				ExpressionType.SIMPLE, "(size|amount) of [all] variables");
+	}
 
 	public static void registerAllFactions() {
 		Skript.registerEvent("Faction Description Change", SimpleEvent.class,
@@ -175,9 +222,9 @@ public class Register {
 				Faction.class, "faction", "player");
 		SimplePropertyExpression.register(ExprFactionDescription.class,
 				String.class, "description", "faction");
-		SimplePropertyExpression.register(ExprFactionPower.class, Double.class,
+		SimplePropertyExpression.register(ExprPlayerPower.class, Double.class,
 				"power", "player");
-		SimplePropertyExpression.register(ExprFactionPowerBoost.class,
+		SimplePropertyExpression.register(ExprPlayerPowerBoost.class,
 				Double.class, "powerboost", "player");
 		SimplePropertyExpression.register(ExprFactionMOTD.class, String.class,
 				"motd", "faction");

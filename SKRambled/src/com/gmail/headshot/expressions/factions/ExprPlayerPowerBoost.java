@@ -9,7 +9,7 @@ import ch.njol.skript.classes.Changer;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 
-public class ExprFactionPowerBoost extends
+public class ExprPlayerPowerBoost extends
 		SimplePropertyExpression<Player, Double> {
 
 	@Override
