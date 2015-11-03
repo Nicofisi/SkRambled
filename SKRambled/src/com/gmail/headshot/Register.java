@@ -29,12 +29,13 @@ import com.gmail.headshot.effects.factions.EffKickPlayer;
 import com.gmail.headshot.effects.factions.EffUnClaimLand;
 import com.gmail.headshot.effects.mcMMO.EffSendAdminMesssage;
 import com.gmail.headshot.effects.mcMMO.EffSendPartyMessage;
-import com.gmail.headshot.events.EvtHeadRotateEvent;
 import com.gmail.headshot.events.factions.EvtFactionCreateEvent;
 import com.gmail.headshot.events.factions.EvtFactionDescriptionChangeEvent;
 import com.gmail.headshot.events.factions.EvtFactionDisbandEvent;
 import com.gmail.headshot.events.factions.EvtFactionNameChangeEvent;
+import com.gmail.headshot.events.general.EvtHeadRotateEvent;
 import com.gmail.headshot.events.general.EvtRepairEvent;
+import com.gmail.headshot.events.general.EvtTeleportCallEvent;
 import com.gmail.headshot.expressions.factions.ExprFactionAllyList;
 import com.gmail.headshot.expressions.factions.ExprFactionClaim;
 import com.gmail.headshot.expressions.factions.ExprFactionDescription;
@@ -98,6 +99,17 @@ public class Register {
 					@Override
 					public ItemStack get(EvtRepairEvent event) {
 						return event.getItem();
+					}
+				}, 0);
+		Skript.registerEvent("Teleport Call", SimpleEvent.class,
+				EvtTeleportCallEvent.class,
+				new String[] { "[player] teleport call" });
+
+		EventValues.registerEventValue(EvtTeleportCallEvent.class,
+				Player.class, new Getter<Player, EvtTeleportCallEvent>() {
+					@Override
+					public Player get(EvtTeleportCallEvent event) {
+						return event.getPlayer();
 					}
 				}, 0);
 		Skript.registerExpression(ExprPitchOfPlayer.class, Float.class,

@@ -4,12 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.gmail.headshot.events.HeadRotateEvent;
 import com.gmail.headshot.events.factions.FactionCreateEvent;
 import com.gmail.headshot.events.factions.FactionDescriptionChangeEvent;
 import com.gmail.headshot.events.factions.FactionDisbandEvent;
 import com.gmail.headshot.events.factions.FactionNameChangeEvent;
+import com.gmail.headshot.events.general.HeadRotateEvent;
 import com.gmail.headshot.events.general.RepairEvent;
+import com.gmail.headshot.events.general.TeleportCallEvent;
 
 public class SKRambled extends JavaPlugin {
 	static SKRambled instance;
@@ -26,6 +27,8 @@ public class SKRambled extends JavaPlugin {
 					new HeadRotateEvent(), this);
 			getServer().getPluginManager().registerEvents(new RepairEvent(),
 					this);
+			getServer().getPluginManager().registerEvents(
+					new TeleportCallEvent(), this);
 			getLogger().info("[SKRambled] Skript has been hooked!");
 			Plugin mcMMO = Bukkit.getServer().getPluginManager()
 					.getPlugin("mcMMO");
