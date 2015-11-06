@@ -7,5 +7,7 @@
 	<classpathentry kind="lib" path="C:/Users/Alaa/Downloads/mcMMO.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Alaa/Downloads/Factions.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Alaa/Downloads/MassiveCore.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Alaa/Downloads/worldguard-6.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Alaa/Downloads/worldedit-bukkit-6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

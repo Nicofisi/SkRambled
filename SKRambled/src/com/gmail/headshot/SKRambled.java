@@ -11,9 +11,12 @@ import com.gmail.headshot.events.factions.FactionNameChangeEvent;
 import com.gmail.headshot.events.general.HeadRotateEvent;
 import com.gmail.headshot.events.general.RepairEvent;
 import com.gmail.headshot.events.general.TeleportCallEvent;
+import com.gmail.headshot.events.worldguard.RegionEnterEvent;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class SKRambled extends JavaPlugin {
 	static SKRambled instance;
+	static Plugin WorldGuard;
 
 	public void onEnable() {
 		instance = this;
@@ -66,6 +69,18 @@ public class SKRambled extends JavaPlugin {
 				getLogger().info("[SKRambled] Unabled to find MassiveCore.");
 
 			}
+			WorldGuard = Bukkit.getServer().getPluginManager()
+					.getPlugin("WorldGuard");
+			if (WorldGuard != null) {
+				getServer().getPluginManager().registerEvents(
+						new RegionEnterEvent(), this);
+				getLogger().info("[SKRambled] Successfully found WorldGuard!");
+				Register.registerAllWorldGuard();
+			} else {
+
+				getLogger().info("[SKRambled] Could not find WorldGuard!");
+
+			}
 		} else {
 
 			getLogger().info(
@@ -83,5 +98,9 @@ public class SKRambled extends JavaPlugin {
 
 	public static SKRambled getInstance() {
 		return instance;
+	}
+
+	public static WorldGuardPlugin getWorldGuard() {
+		return (WorldGuardPlugin) WorldGuard;
 	}
 }

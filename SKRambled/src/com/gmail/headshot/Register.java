@@ -2,7 +2,10 @@ package com.gmail.headshot;
 
 import javax.annotation.Nullable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,6 +39,7 @@ import com.gmail.headshot.events.factions.EvtFactionNameChangeEvent;
 import com.gmail.headshot.events.general.EvtHeadRotateEvent;
 import com.gmail.headshot.events.general.EvtRepairEvent;
 import com.gmail.headshot.events.general.EvtTeleportCallEvent;
+import com.gmail.headshot.events.worldguard.EvtRegionEnterEvent;
 import com.gmail.headshot.expressions.factions.ExprFactionAllyList;
 import com.gmail.headshot.expressions.factions.ExprFactionClaim;
 import com.gmail.headshot.expressions.factions.ExprFactionDescription;
@@ -59,12 +63,21 @@ import com.gmail.headshot.expressions.general.ExprPitchOfPlayer;
 import com.gmail.headshot.expressions.general.ExprYawOfPlayer;
 import com.gmail.headshot.expressions.mcMMO.ExprLevel;
 import com.gmail.headshot.expressions.mcMMO.ExprPowerLevel;
+import com.gmail.headshot.expressions.worldguard.ExprFlagOfRegion;
+import com.gmail.headshot.expressions.worldguard.ExprFlagsOfRegion;
+import com.gmail.headshot.expressions.worldguard.ExprMembersOfRegion;
+import com.gmail.headshot.expressions.worldguard.ExprOwnersOfRegion;
+import com.gmail.headshot.expressions.worldguard.ExprRegionAtLocation;
 import com.gmail.nossr50.datatypes.party.Party;
 import com.gmail.nossr50.datatypes.skills.SkillType;
 import com.gmail.nossr50.party.PartyManager;
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
+import com.sk89q.worldguard.bukkit.WGBukkit;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class Register {
 
@@ -387,7 +400,13 @@ public class Register {
 					@Override
 					@Nullable
 					public SkillType parse(String s, ParseContext context) {
-						return SkillType.getSkill(s);
+						try {
+
+							return SkillType.valueOf(s.toUpperCase());
+						} catch (Exception e) {
+
+						}
+						return null;
 					}
 
 					@Override
@@ -406,6 +425,107 @@ public class Register {
 					}
 
 				}));
+
+	}
+
+	public static void registerAllWorldGuard() {
+		Skript.registerEvent("Region Enter", SimpleEvent.class,
+				EvtRegionEnterEvent.class,
+				new String[] { "[protected |protected]region enter" });
+
+		EventValues.registerEventValue(EvtRegionEnterEvent.class, Player.class,
+				new Getter<Player, EvtRegionEnterEvent>() {
+					@Override
+					public Player get(EvtRegionEnterEvent event) {
+						return event.getPlayer();
+					}
+				}, 0);
+		EventValues.registerEventValue(EvtRegionEnterEvent.class,
+				ProtectedRegion.class,
+				new Getter<ProtectedRegion, EvtRegionEnterEvent>() {
+					@Override
+					public ProtectedRegion get(EvtRegionEnterEvent event) {
+						return event.getRegion();
+					}
+				}, 0);
+		Skript.registerExpression(ExprRegionAtLocation.class,
+				ProtectedRegion.class, ExpressionType.SIMPLE,
+				"region[s] at %location%");
+		Skript.registerExpression(ExprMembersOfRegion.class,
+				OfflinePlayer.class, ExpressionType.SIMPLE,
+				"[list of] members of [the] [region] %protectedregion%");
+		Skript.registerExpression(ExprOwnersOfRegion.class,
+				OfflinePlayer.class, ExpressionType.SIMPLE,
+				"[list of] owners of [the] [region] %protectedregion%");
+		Skript.registerExpression(ExprFlagsOfRegion.class, Flag.class,
+				ExpressionType.SIMPLE,
+				"[list of] flags of [the] [region] %protectedregion%");
+		Skript.registerExpression(ExprFlagOfRegion.class, String.class,
+				ExpressionType.SIMPLE,
+				"[the] flag %flag% of [the] [region] %protectedregion%");
+		registerWorldGuardTypes();
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static void registerWorldGuardTypes() {
+		Classes.registerClass(new ClassInfo<ProtectedRegion>(
+				ProtectedRegion.class, "protectedregion")
+				.name("Protected Region")
+				.user("protectedregions?")
+				.defaultExpression(
+						new EventValueExpression<ProtectedRegion>(
+								ProtectedRegion.class))
+				.parser(new Parser<ProtectedRegion>() {
+					@Override
+					@Nullable
+					public ProtectedRegion parse(String s, ParseContext context) {
+						for (World w : Bukkit.getServer().getWorlds()) {
+							if (WGBukkit.getRegionManager(w).hasRegion(s))
+								return WGBukkit.getRegionManager(w)
+										.getRegion(s);
+						}
+						return null;
+					}
+
+					@Override
+					public String toString(ProtectedRegion region, int flags) {
+						return region.getId().toLowerCase();
+					}
+
+					@Override
+					public String toVariableNameString(ProtectedRegion region) {
+						return region.getId().toLowerCase();
+					}
+
+					@Override
+					public String getVariableNamePattern() {
+						return ".+";
+					}
+
+				}));
+		Classes.registerClass(new ClassInfo<Flag>(Flag.class, "flag").name(
+				"Flag").parser(new Parser<Flag<?>>() {
+			@Override
+			public Flag<?> parse(String s, ParseContext context) {
+				return DefaultFlag.fuzzyMatchFlag(s);
+			}
+
+			@Override
+			public String toString(Flag<?> flag, int flags) {
+				return flag.getName().toLowerCase();
+			}
+
+			@Override
+			public String toVariableNameString(Flag<?> flag) {
+				return flag.getName().toLowerCase();
+			}
+
+			@Override
+			public String getVariableNamePattern() {
+				return ".+";
+			}
+
+		}));
 
 	}
 
