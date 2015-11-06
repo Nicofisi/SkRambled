@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -129,6 +130,14 @@ public class Register {
 		Skript.registerEvent("Crop Grow", SimpleEvent.class,
 				EvtCropGrowEvent.class,
 				new String[] { "[skrambled] crop grow" });
+
+		EventValues.registerEventValue(EvtCropGrowEvent.class, Block.class,
+				new Getter<Block, EvtCropGrowEvent>() {
+					@Override
+					public Block get(EvtCropGrowEvent event) {
+						return event.getBlock();
+					}
+				}, 0);
 		Skript.registerExpression(ExprPitchOfPlayer.class, Float.class,
 				ExpressionType.SIMPLE, "pitch of %player%", "%player%'s pitch");
 		Skript.registerExpression(ExprYawOfPlayer.class, Float.class,
