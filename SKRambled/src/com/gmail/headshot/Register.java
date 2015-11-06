@@ -36,6 +36,7 @@ import com.gmail.headshot.events.factions.EvtFactionCreateEvent;
 import com.gmail.headshot.events.factions.EvtFactionDescriptionChangeEvent;
 import com.gmail.headshot.events.factions.EvtFactionDisbandEvent;
 import com.gmail.headshot.events.factions.EvtFactionNameChangeEvent;
+import com.gmail.headshot.events.general.EvtCropGrowEvent;
 import com.gmail.headshot.events.general.EvtHeadRotateEvent;
 import com.gmail.headshot.events.general.EvtRepairEvent;
 import com.gmail.headshot.events.general.EvtTeleportCallEvent;
@@ -125,6 +126,9 @@ public class Register {
 						return event.getPlayer();
 					}
 				}, 0);
+		Skript.registerEvent("Crop Grow", SimpleEvent.class,
+				EvtCropGrowEvent.class,
+				new String[] { "[skrambled] crop grow" });
 		Skript.registerExpression(ExprPitchOfPlayer.class, Float.class,
 				ExpressionType.SIMPLE, "pitch of %player%", "%player%'s pitch");
 		Skript.registerExpression(ExprYawOfPlayer.class, Float.class,

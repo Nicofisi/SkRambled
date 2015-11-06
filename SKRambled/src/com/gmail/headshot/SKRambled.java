@@ -8,6 +8,7 @@ import com.gmail.headshot.events.factions.FactionCreateEvent;
 import com.gmail.headshot.events.factions.FactionDescriptionChangeEvent;
 import com.gmail.headshot.events.factions.FactionDisbandEvent;
 import com.gmail.headshot.events.factions.FactionNameChangeEvent;
+import com.gmail.headshot.events.general.CropGrowEvent;
 import com.gmail.headshot.events.general.HeadRotateEvent;
 import com.gmail.headshot.events.general.RepairEvent;
 import com.gmail.headshot.events.general.TeleportCallEvent;
@@ -32,6 +33,8 @@ public class SKRambled extends JavaPlugin {
 					this);
 			getServer().getPluginManager().registerEvents(
 					new TeleportCallEvent(), this);
+			getServer().getPluginManager().registerEvents(new CropGrowEvent(),
+					this);
 			getLogger().info("[SKRambled] Skript has been hooked!");
 			Plugin mcMMO = Bukkit.getServer().getPluginManager()
 					.getPlugin("mcMMO");
