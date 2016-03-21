@@ -1,7 +1,0 @@
-name: SkRambled
-author: HeadShot
-description: The SKRambled Addon for Skript
-version: 1.2
-main: com.gmail.headshot.SKRambled
-depend: [Skript]
-softdepend: [mcMMO, Factions, MassiveCore, WorldGuard]
