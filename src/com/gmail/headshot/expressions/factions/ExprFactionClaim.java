@@ -1,7 +1,7 @@
 package com.gmail.headshot.expressions.factions;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
+import javax.annotation.Nullable;
 import org.bukkit.event.Event;
 
 import com.massivecraft.factions.entity.BoardColl;

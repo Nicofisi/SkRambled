@@ -4,9 +4,7 @@ import javax.annotation.Nullable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,11 +35,7 @@ import com.gmail.headshot.events.factions.EvtFactionCreateEvent;
 import com.gmail.headshot.events.factions.EvtFactionDescriptionChangeEvent;
 import com.gmail.headshot.events.factions.EvtFactionDisbandEvent;
 import com.gmail.headshot.events.factions.EvtFactionNameChangeEvent;
-import com.gmail.headshot.events.general.EvtCropGrowEvent;
-import com.gmail.headshot.events.general.EvtHeadRotateEvent;
 import com.gmail.headshot.events.general.EvtRepairEvent;
-import com.gmail.headshot.events.general.EvtTeleportCallEvent;
-import com.gmail.headshot.events.worldguard.EvtRegionEnterEvent;
 import com.gmail.headshot.expressions.factions.ExprFactionAllyList;
 import com.gmail.headshot.expressions.factions.ExprFactionClaim;
 import com.gmail.headshot.expressions.factions.ExprFactionDescription;
@@ -65,11 +59,6 @@ import com.gmail.headshot.expressions.general.ExprPitchOfPlayer;
 import com.gmail.headshot.expressions.general.ExprYawOfPlayer;
 import com.gmail.headshot.expressions.mcMMO.ExprLevel;
 import com.gmail.headshot.expressions.mcMMO.ExprPowerLevel;
-import com.gmail.headshot.expressions.worldguard.ExprFlagOfRegion;
-import com.gmail.headshot.expressions.worldguard.ExprFlagsOfRegion;
-import com.gmail.headshot.expressions.worldguard.ExprMembersOfRegion;
-import com.gmail.headshot.expressions.worldguard.ExprOwnersOfRegion;
-import com.gmail.headshot.expressions.worldguard.ExprRegionAtLocation;
 import com.gmail.nossr50.datatypes.party.Party;
 import com.gmail.nossr50.datatypes.skills.SkillType;
 import com.gmail.nossr50.party.PartyManager;
@@ -86,18 +75,7 @@ public class Register {
 	public static void registerSkript() {
 
 		Skript.registerAddon(SKRambled.getInstance());
-
-		Skript.registerEvent("Head Rotate", SimpleEvent.class,
-				EvtHeadRotateEvent.class,
-				new String[] { "head (rotat(e|ion)|move[ment])" });
-
-		EventValues.registerEventValue(EvtHeadRotateEvent.class, Player.class,
-				new Getter<Player, EvtHeadRotateEvent>() {
-					@Override
-					public Player get(EvtHeadRotateEvent event) {
-						return event.getPlayer();
-					}
-				}, 0);
+		
 		Skript.registerEvent("Repair", SimpleEvent.class, EvtRepairEvent.class,
 				new String[] { "repair" });
 
@@ -116,28 +94,7 @@ public class Register {
 						return event.getItem();
 					}
 				}, 0);
-		Skript.registerEvent("Teleport Call", SimpleEvent.class,
-				EvtTeleportCallEvent.class,
-				new String[] { "[player] teleport call" });
 
-		EventValues.registerEventValue(EvtTeleportCallEvent.class,
-				Player.class, new Getter<Player, EvtTeleportCallEvent>() {
-					@Override
-					public Player get(EvtTeleportCallEvent event) {
-						return event.getPlayer();
-					}
-				}, 0);
-		Skript.registerEvent("Crop Grow", SimpleEvent.class,
-				EvtCropGrowEvent.class,
-				new String[] { "[skrambled] crop grow" });
-
-		EventValues.registerEventValue(EvtCropGrowEvent.class, Block.class,
-				new Getter<Block, EvtCropGrowEvent>() {
-					@Override
-					public Block get(EvtCropGrowEvent event) {
-						return event.getBlock();
-					}
-				}, 0);
 		Skript.registerExpression(ExprPitchOfPlayer.class, Float.class,
 				ExpressionType.SIMPLE, "pitch of %player%", "%player%'s pitch");
 		Skript.registerExpression(ExprYawOfPlayer.class, Float.class,
@@ -340,7 +297,7 @@ public class Register {
 					@Override
 					@Nullable
 					public Rel parse(String s, ParseContext context) {
-						return Rel.parse(s);
+						return this.parse(s, context);
 					}
 
 					@Override
@@ -441,44 +398,6 @@ public class Register {
 
 	}
 
-	public static void registerAllWorldGuard() {
-		Skript.registerEvent("Region Enter", SimpleEvent.class,
-				EvtRegionEnterEvent.class,
-				new String[] { "[protected |protected]region enter" });
-
-		EventValues.registerEventValue(EvtRegionEnterEvent.class, Player.class,
-				new Getter<Player, EvtRegionEnterEvent>() {
-					@Override
-					public Player get(EvtRegionEnterEvent event) {
-						return event.getPlayer();
-					}
-				}, 0);
-		EventValues.registerEventValue(EvtRegionEnterEvent.class,
-				ProtectedRegion.class,
-				new Getter<ProtectedRegion, EvtRegionEnterEvent>() {
-					@Override
-					public ProtectedRegion get(EvtRegionEnterEvent event) {
-						return event.getRegion();
-					}
-				}, 0);
-		Skript.registerExpression(ExprRegionAtLocation.class,
-				ProtectedRegion.class, ExpressionType.SIMPLE,
-				"region[s] at %location%");
-		Skript.registerExpression(ExprMembersOfRegion.class,
-				OfflinePlayer.class, ExpressionType.SIMPLE,
-				"[list of] members of [the] [region] %protectedregion%");
-		Skript.registerExpression(ExprOwnersOfRegion.class,
-				OfflinePlayer.class, ExpressionType.SIMPLE,
-				"[list of] owners of [the] [region] %protectedregion%");
-		Skript.registerExpression(ExprFlagsOfRegion.class, Flag.class,
-				ExpressionType.SIMPLE,
-				"[list of] flags of [the] [region] %protectedregion%");
-		Skript.registerExpression(ExprFlagOfRegion.class, String.class,
-				ExpressionType.SIMPLE,
-				"[the] flag %flag% of [the] [region] %protectedregion%");
-		registerWorldGuardTypes();
-	}
-
 	@SuppressWarnings("rawtypes")
 	public static void registerWorldGuardTypes() {
 		Classes.registerClass(new ClassInfo<ProtectedRegion>(
@@ -540,6 +459,46 @@ public class Register {
 
 		}));
 
+	}
+	public static Rel parse (String str)
+	{
+		if (str == null || str.length() < 1) return null;
+		
+		str = str.toLowerCase();
+		
+		if (str.equals("leader"))
+		{
+			return Rel.LEADER;
+		}
+		else if (str.equals("officer"))
+		{
+			return Rel.OFFICER;
+		}
+		else if (str.equals("member"))
+		{
+			return Rel.MEMBER;
+		}
+		else if (str.equals("recruit"))
+		{
+			return Rel.RECRUIT;
+		}
+		else if (str.equals("ally"))
+		{
+			return Rel.ALLY;
+		}
+		else if (str.equals("truce"))
+		{
+			return Rel.TRUCE;
+		}
+		else if (str.equals("enemy"))
+		{
+			return Rel.ENEMY;
+		}
+		else if (str.equals("neutral"))
+		{
+			return Rel.NEUTRAL;
+		}
+		return null;
 	}
 
 }

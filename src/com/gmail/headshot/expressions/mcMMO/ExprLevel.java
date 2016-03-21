@@ -1,6 +1,6 @@
 package com.gmail.headshot.expressions.mcMMO;
 
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
+import javax.annotation.Nullable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 

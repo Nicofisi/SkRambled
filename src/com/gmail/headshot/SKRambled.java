@@ -8,11 +8,7 @@ import com.gmail.headshot.events.factions.FactionCreateEvent;
 import com.gmail.headshot.events.factions.FactionDescriptionChangeEvent;
 import com.gmail.headshot.events.factions.FactionDisbandEvent;
 import com.gmail.headshot.events.factions.FactionNameChangeEvent;
-import com.gmail.headshot.events.general.CropGrowEvent;
-import com.gmail.headshot.events.general.HeadRotateEvent;
 import com.gmail.headshot.events.general.RepairEvent;
-import com.gmail.headshot.events.general.TeleportCallEvent;
-import com.gmail.headshot.events.worldguard.RegionEnterEvent;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class SKRambled extends JavaPlugin {
@@ -27,13 +23,7 @@ public class SKRambled extends JavaPlugin {
 			getLogger()
 					.info("[SKRambled] Congratulations! It is official.. SKRambled has been enabled!");
 			Register.registerSkript();
-			getServer().getPluginManager().registerEvents(
-					new HeadRotateEvent(), this);
 			getServer().getPluginManager().registerEvents(new RepairEvent(),
-					this);
-			getServer().getPluginManager().registerEvents(
-					new TeleportCallEvent(), this);
-			getServer().getPluginManager().registerEvents(new CropGrowEvent(),
 					this);
 			getLogger().info("[SKRambled] Skript has been hooked!");
 			Plugin mcMMO = Bukkit.getServer().getPluginManager()
@@ -70,19 +60,6 @@ public class SKRambled extends JavaPlugin {
 			} else {
 
 				getLogger().info("[SKRambled] Unabled to find MassiveCore.");
-
-			}
-			WorldGuard = Bukkit.getServer().getPluginManager()
-					.getPlugin("WorldGuard");
-			if (WorldGuard != null) {
-				getServer().getPluginManager().registerEvents(
-						new RegionEnterEvent(), this);
-				getLogger().info("[SKRambled] Successfully found WorldGuard!");
-				Register.registerAllWorldGuard();
-			} else {
-
-				getLogger().info("[SKRambled] Could not find WorldGuard!");
-
 			}
 		} else {
 

@@ -3,7 +3,7 @@ package com.gmail.headshot.expressions.factions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
+import javax.annotation.Nullable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 

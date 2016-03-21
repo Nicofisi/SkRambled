@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
+import javax.annotation.Nullable;
 import org.bukkit.event.Event;
 
 import com.massivecraft.factions.Rel;
